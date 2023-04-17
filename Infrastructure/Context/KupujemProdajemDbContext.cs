@@ -10,5 +10,14 @@ namespace KupujemProdajem.Infrastructure.Context
         {
             
         }
+        public DbSet<AdModel> Ads { get; set; }
+        public DbSet<CategoryModel> Categories { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<AdModel>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+        }
     }
 }
