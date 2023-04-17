@@ -18,5 +18,6 @@ namespace KupujemProdajem.Domain.Models
         public UserModel? User { get; set; }
         public int CategoryId { get; set; }
         public CategoryModel Category { get; set; }
+        //public string? ImageUrl { get; set; }
     }
 }
