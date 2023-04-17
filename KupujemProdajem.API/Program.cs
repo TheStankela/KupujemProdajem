@@ -1,3 +1,5 @@
+using KupujemProdajem.Application.Interfaces;
+using KupujemProdajem.Application.Services;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
 using KupujemProdajem.Infrastructure.Context;
@@ -18,6 +20,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAdRepository, AdRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 builder.Services.AddDbContext<KupujemProdajemDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KupujemProdajemConnection"))
@@ -31,7 +34,16 @@ builder.Services.AddIdentity<UserModel, IdentityRole>()
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+    .AddCookie(options =>
+    {
+        options.Events.OnRedirectToLogin = (context) =>
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        };
+    });
+
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -43,6 +55,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(options =>
+    options.WithOrigins("http://localhost:4200/", "http://localhost:4200")
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials());
 
 app.UseAuthorization();
 app.UseAuthentication();
