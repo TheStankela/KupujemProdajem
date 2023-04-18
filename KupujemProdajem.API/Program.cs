@@ -26,22 +26,15 @@ builder.Services.AddDbContext<KupujemProdajemDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KupujemProdajemConnection"))
 );
 builder.Services.AddIdentity<UserModel, IdentityRole>()
-    .AddEntityFrameworkStores<KupujemProdajemDbContext>();
-
+    .AddEntityFrameworkStores<KupujemProdajemDbContext>()
+    .AddDefaultTokenProviders();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+});
 //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
 //                .AddEntityFrameworkStores<KupujemProdajemDbContext>();
 
-builder.Services.AddSession();
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.Events.OnRedirectToLogin = (context) =>
-        {
-            context.Response.StatusCode = 401;
-            return Task.CompletedTask;
-        };
-    });
 
 builder.Services.AddCors();
 
@@ -56,7 +49,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(options =>
-    options.WithOrigins("http://localhost:4200/", "http://localhost:4200")
+    options.WithOrigins("http://localhost:4200", "http://localhost:4200/login")
           .AllowAnyHeader()
           .AllowAnyMethod()
           .AllowCredentials());

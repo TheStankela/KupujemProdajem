@@ -35,10 +35,10 @@ namespace KupujemProdajem.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAdd([FromBody]CreateAdModel adDto)
         {
-            var curUserId = _contextAccessor.HttpContext.User.GetUserId();
-            if (curUserId == null)
+            if(!_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
                 return BadRequest("You must be logged in.");
 
+            var curUserId = _contextAccessor.HttpContext.User.GetUserId();
             var category = await _categoryRepository.GetCategoryByIdAsync(adDto.CategoryId);
             if (category == null)
                 return NotFound("Category not found.");
