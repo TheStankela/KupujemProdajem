@@ -24,5 +24,23 @@ namespace KupujemProdajem.Infrastructure.Repositories
         {
             return await _context.Categories.AnyAsync(x => x.Id == categoryId);
         }
+
+        public async Task<bool> CreateCategory(CategoryModel category)
+        {
+            await _context.AddAsync(category);
+            return await Save();
+        }
+
+        public async Task<bool> DeleteCategory(CategoryModel category)
+        {
+             _context.Remove(category);
+            return await Save();
+        }
+
+        public async Task<bool> Save()
+        {
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0 ? true : false;
+        }
     }
 }
