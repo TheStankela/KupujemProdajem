@@ -17,7 +17,7 @@ namespace KupujemProdajem.Infrastructure.Repositories
         {
             return await _context.Ads.ToListAsync();
         }
-        public async Task<AdModel> GetAdByIdAsync(int id)
+        public async Task<AdModel?> GetAdByIdAsync(int id)
         {
             return await _context.Ads.FirstOrDefaultAsync(x => x.Id == id);
         }

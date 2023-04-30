@@ -4,6 +4,7 @@ using KupujemProdajem.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KupujemProdajem.Infrastructure.Migrations
 {
     [DbContext(typeof(KupujemProdajemDbContext))]
-    partial class KupujemProdajemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230430141633_ImagesUpload")]
+    partial class ImagesUpload
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace KupujemProdajem.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ads", (string)null);
+                    b.ToTable("Ads");
                 });
 
             modelBuilder.Entity("KupujemProdajem.Domain.Models.CategoryModel", b =>
@@ -73,7 +76,7 @@ namespace KupujemProdajem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("KupujemProdajem.Domain.Models.PhotoModel", b =>
@@ -95,7 +98,7 @@ namespace KupujemProdajem.Infrastructure.Migrations
 
                     b.HasIndex("AdId");
 
-                    b.ToTable("Photos", (string)null);
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("KupujemProdajem.Domain.Models.UserModel", b =>

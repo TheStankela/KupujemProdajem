@@ -12,6 +12,7 @@ namespace KupujemProdajem.Infrastructure.Context
         }
         public DbSet<AdModel> Ads { get; set; }
         public DbSet<CategoryModel> Categories { get; set; }
+        public DbSet<PhotoModel> Photos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
