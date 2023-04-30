@@ -1,10 +1,8 @@
 ﻿using KupujemProdajem.API.Models;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using System.Data;
 
 namespace KupujemProdajem.API.Controllers
 {
@@ -23,12 +21,14 @@ namespace KupujemProdajem.API.Controllers
             var result = await _categoryRepository.GetAllCategoriesAsync();
             return Ok(result);
         }
+        [Authorize (Roles = "admin")]
         [HttpGet("{categoryId}")]
         public async Task<IActionResult> GetCategoryByIdAsync(int categoryId)
         {
             var result = await _categoryRepository.GetCategoryByIdAsync(categoryId);
             return result != null ? Ok(result) : NotFound("Category does not exist");
         }
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryModel categoryCreateModel)
         {
@@ -39,6 +39,7 @@ namespace KupujemProdajem.API.Controllers
             }
             return Ok("Category created successfully!");
         }
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

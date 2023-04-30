@@ -2,6 +2,7 @@
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Infrastructure.Context;
 using KupujemProdajem.Infrastructure.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace KupujemProdajem.API.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginModel userLoginModel)
         {
@@ -47,6 +48,7 @@ namespace KupujemProdajem.API.Controllers
             }
             return BadRequest(userLoginModel);
         }
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterModel userRegisterModel)
         {

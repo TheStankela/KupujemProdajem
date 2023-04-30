@@ -2,6 +2,7 @@
 using KupujemProdajem.Domain.Interfaces;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ namespace KupujemProdajem.API.Controllers
             _photoService = photoService;
             _photoRepository = photoRepository;
         }
+        [Authorize]
         [HttpPost("{advertisementId}")]
         public async Task<IActionResult> UploadPhotos(List<IFormFile> pictureFiles, int advertisementId)
         {

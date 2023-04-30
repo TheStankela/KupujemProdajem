@@ -1,15 +1,11 @@
-﻿using CloudinaryDotNet.Actions;
+﻿using IdentityServer4.AccessTokenValidation;
 using KupujemProdajem.API.Extensions;
 using KupujemProdajem.API.Models;
 using KupujemProdajem.Application.Interfaces;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
-using KupujemProdajem.Infrastructure.Context;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace KupujemProdajem.API.Controllers
 {
@@ -35,13 +31,10 @@ namespace KupujemProdajem.API.Controllers
             var result = await _adRepository.GetAllAdsAsync();
             return Ok(result);
         }
-        
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAdd([FromBody] CreateAdModel adDto)
         {
-            if (!_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
-                return BadRequest("You must be logged in.");
-
             var curUserId = _contextAccessor.HttpContext.User.GetUserId();
 
             var category = await _categoryRepository.GetCategoryByIdAsync(adDto.CategoryId);
@@ -65,6 +58,7 @@ namespace KupujemProdajem.API.Controllers
 
             return Ok("Successfully added.");
         }
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> DeleteAd([FromQuery] int advertisementId)
         {

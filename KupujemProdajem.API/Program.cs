@@ -1,3 +1,4 @@
+using IdentityServer4.AccessTokenValidation;
 using KupujemProdajem.Application.Interfaces;
 using KupujemProdajem.Application.Services;
 using KupujemProdajem.Domain.Helpers;
@@ -6,6 +7,7 @@ using KupujemProdajem.Domain.Repositories;
 using KupujemProdajem.Infrastructure.Context;
 using KupujemProdajem.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAdRepository, AdRepository>();
@@ -24,20 +26,42 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+//Database context
 builder.Services.AddDbContext<KupujemProdajemDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KupujemProdajemConnection"))
 );
+//Identity
 builder.Services.AddIdentity<UserModel, IdentityRole>()
     .AddEntityFrameworkStores<KupujemProdajemDbContext>()
     .AddDefaultTokenProviders();
-builder.Services.ConfigureApplicationCookie(options =>
+
+//Without this configuration API calls that need authorization return 404 
+builder.Services.ConfigureApplicationCookie(o =>
 {
-    options.Cookie.SameSite = SameSiteMode.None;
+    o.Events = new CookieAuthenticationEvents()
+    {
+        OnRedirectToLogin = (ctx) =>
+        {
+            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+            {
+                ctx.Response.StatusCode = 401;
+            }
+
+            return Task.CompletedTask;
+        },
+        OnRedirectToAccessDenied = (ctx) =>
+        {
+            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+            {
+                ctx.Response.StatusCode = 403;
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-//                .AddEntityFrameworkStores<KupujemProdajemDbContext>();
 
-
+//Adding CORS
 builder.Services.AddCors();
 
 var app = builder.Build();
@@ -56,8 +80,10 @@ app.UseCors(options =>
           .AllowAnyMethod()
           .AllowCredentials());
 
-app.UseAuthorization();
+app.UseStaticFiles();
+app.UseRouting();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
