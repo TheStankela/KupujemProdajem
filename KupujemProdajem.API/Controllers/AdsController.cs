@@ -1,5 +1,7 @@
-﻿using KupujemProdajem.API.Extensions;
+﻿using CloudinaryDotNet.Actions;
+using KupujemProdajem.API.Extensions;
 using KupujemProdajem.API.Models;
+using KupujemProdajem.Application.Interfaces;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
 using KupujemProdajem.Infrastructure.Context;
@@ -18,12 +20,14 @@ namespace KupujemProdajem.API.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IAdRepository _adRepository;
+        private readonly IPhotoService _photoService;
 
-        public AdsController(ICategoryRepository categoryRepository, IHttpContextAccessor contextAccessor, IAdRepository adRepository)
+        public AdsController(ICategoryRepository categoryRepository, IHttpContextAccessor contextAccessor, IAdRepository adRepository, IPhotoService photoService)
         {
             _categoryRepository = categoryRepository;
             _contextAccessor = contextAccessor;
             _adRepository = adRepository;
+            _photoService = photoService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllAds()
@@ -33,15 +37,17 @@ namespace KupujemProdajem.API.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateAdd([FromBody]CreateAdModel adDto)
+        public async Task<IActionResult> CreateAdd([FromBody] CreateAdModel adDto)
         {
-            if(!_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (!_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
                 return BadRequest("You must be logged in.");
 
             var curUserId = _contextAccessor.HttpContext.User.GetUserId();
+
             var category = await _categoryRepository.GetCategoryByIdAsync(adDto.CategoryId);
             if (category == null)
                 return NotFound("Category not found.");
+
 
             var adModel = new AdModel
             {
@@ -60,10 +66,10 @@ namespace KupujemProdajem.API.Controllers
             return Ok("Successfully added.");
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteAd([FromQuery]int advertisementId)
+        public async Task<IActionResult> DeleteAd([FromQuery] int advertisementId)
         {
             var adToDelete = await _adRepository.GetAdByIdAsync(advertisementId);
-            if(adToDelete == null) return NotFound();
+            if (adToDelete == null) return NotFound();
 
             var curUserId = _contextAccessor.HttpContext.User.GetUserId();
             if (adToDelete.UserId != curUserId)
@@ -71,7 +77,7 @@ namespace KupujemProdajem.API.Controllers
 
             if (!await _adRepository.DeleteAd(adToDelete))
                 return BadRequest("Something went wrong");
-            
+
             return Ok("Successfully deleted");
         }
     }
