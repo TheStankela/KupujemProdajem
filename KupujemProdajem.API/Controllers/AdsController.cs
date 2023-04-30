@@ -31,6 +31,24 @@ namespace KupujemProdajem.API.Controllers
             var result = await _adRepository.GetAllAdsAsync();
             return Ok(result);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAdById(int id)
+        {
+            var ads = await _adRepository.GetAdByIdAsync(id);
+            return Ok(ads);
+        }
+        [HttpGet("Users/{userId}")]
+        public async Task<IActionResult> GetAdsByUserId(string userId)
+        {
+            var ads = await _adRepository.GetAdsByUserId(userId);
+            return Ok(ads);
+        }
+        [HttpGet("Categories/{categoryId}")]
+        public async Task<IActionResult> GetAdsByCategory(int categoryId)
+        {
+            var ads = await _adRepository.GetAdsByCategory(categoryId);
+            return Ok(ads);
+        }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAdd([FromBody] CreateAdModel adDto)

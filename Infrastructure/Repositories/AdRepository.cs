@@ -41,5 +41,15 @@ namespace KupujemProdajem.Infrastructure.Repositories
             _context.Update(adModel);
             return await SaveAsync();
         }
+
+        public async Task<List<AdModel>> GetAdsByCategory(int categoryId)
+        {
+            return await _context.Ads.Where(a => a.CategoryId == categoryId).ToListAsync();
+        }
+
+        public async Task<List<AdModel>> GetAdsByUserId(string userId)
+        {
+            return await _context.Ads.Where(a => a.UserId== userId).ToListAsync();
+        }
     }
 }

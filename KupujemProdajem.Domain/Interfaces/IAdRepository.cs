@@ -10,5 +10,7 @@ namespace KupujemProdajem.Domain.Repositories
         Task<IEnumerable<AdModel>> GetAllAdsAsync();
         Task<bool> SaveAsync();
         Task<bool> UpdateAd(AdModel adModel);
+        Task<List<AdModel>> GetAdsByCategory(int categoryId);
+        Task<List<AdModel>> GetAdsByUserId(string userId);
     }
 }
