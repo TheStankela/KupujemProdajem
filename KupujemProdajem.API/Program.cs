@@ -1,5 +1,6 @@
 using KupujemProdajem.Application.Interfaces;
 using KupujemProdajem.Application.Services;
+using KupujemProdajem.Domain.Helpers;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
 using KupujemProdajem.Infrastructure.Context;
@@ -21,6 +22,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAdRepository, AdRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 builder.Services.AddDbContext<KupujemProdajemDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KupujemProdajemConnection"))
