@@ -1,7 +1,9 @@
 ﻿using KupujemProdajem.Application.Interfaces;
+using KupujemProdajem.Application.Mediator.Commands.PhotoCommands;
 using KupujemProdajem.Domain.Interfaces;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,40 +14,19 @@ namespace KupujemProdajem.API.Controllers
     [ApiController]
     public class PhotoController : ControllerBase
     {
-        public readonly IAdRepository _adRepository;
-        private readonly IPhotoService _photoService;
-        private readonly IPhotoRepository _photoRepository;
-
-        public PhotoController(IAdRepository adRepository, IPhotoService photoService, IPhotoRepository photoRepository)
+        private readonly IMediator _mediator;
+        public PhotoController(IMediator mediator)
         {
-            _adRepository = adRepository;
-            _photoService = photoService;
-            _photoRepository = photoRepository;
+           _mediator = mediator;
         }
         [Authorize]
         [HttpPost("{advertisementId}")]
         public async Task<IActionResult> UploadPhotos(List<IFormFile> pictureFiles, int advertisementId)
         {
-            var ad = await _adRepository.GetAdByIdAsync(advertisementId);
+            var command = new UploadPhotoCommand(pictureFiles, advertisementId);
+            var result = await _mediator.Send(command);
 
-            if (pictureFiles.Count > 0)
-            {
-                foreach (var item in pictureFiles)
-                {
-                    var itemUrl = await _photoService.AddPhotoAsync(item);
-                    var photoToAdd = new PhotoModel
-                    {
-                        Ad = ad,
-                        Url = itemUrl.Url.ToString()
-                    };
-                    await _photoRepository.AddPhoto(photoToAdd);
-                }
-                return Ok("File upload completed.");
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return result == true ? Ok("Upload succeeded.") : BadRequest("Upload unsuccessfull.");
         }
     }
 }
