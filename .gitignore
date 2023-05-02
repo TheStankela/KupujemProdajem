@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Infrastructure/Migrations/20230429144954_SignalR.cs
+/KupujemProdajem.API/appsettings.json
