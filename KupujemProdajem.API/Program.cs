@@ -1,7 +1,9 @@
 using IdentityServer4.AccessTokenValidation;
 using KupujemProdajem.Application.Interfaces;
+using KupujemProdajem.Application.Mediator.Queries.AdQueries;
 using KupujemProdajem.Application.Services;
 using KupujemProdajem.Domain.Helpers;
+using KupujemProdajem.Domain.Interfaces;
 using KupujemProdajem.Domain.Models;
 using KupujemProdajem.Domain.Repositories;
 using KupujemProdajem.Infrastructure.Context;
@@ -24,7 +26,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAdRepository, AdRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
+//MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetAllAdsQuery)));
 
 //Database context
 builder.Services.AddDbContext<KupujemProdajemDbContext>(options =>
