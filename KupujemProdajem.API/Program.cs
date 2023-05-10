@@ -27,14 +27,19 @@ builder.Services.AddScoped<IAdRepository, AdRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.Configure<CloudinarySettings>(options =>
+{
+    options.CloudName = Environment.GetEnvironmentVariable("CloudName");
+    options.ApiSecret = Environment.GetEnvironmentVariable("ApiSecret");
+    options.ApiKey = Environment.GetEnvironmentVariable("ApiKey");
+});
 
 //MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(GetAllAdsQuery)));
 
 //Database context
 builder.Services.AddDbContext<KupujemProdajemDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("KupujemProdajemConnection"))
+options.UseSqlServer(Environment.GetEnvironmentVariable("KupujemProdajemDBString"))
 );
 //Identity
 builder.Services.AddIdentity<UserModel, IdentityRole>()

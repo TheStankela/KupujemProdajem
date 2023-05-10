@@ -1,12 +1,7 @@
-﻿using KupujemProdajem.Application.Interfaces;
-using KupujemProdajem.Application.Mediator.Commands.PhotoCommands;
+﻿using KupujemProdajem.Application.Mediator.Commands.PhotoCommands;
 using KupujemProdajem.Application.Mediator.Queries.PhotoQueries;
-using KupujemProdajem.Domain.Interfaces;
-using KupujemProdajem.Domain.Models;
-using KupujemProdajem.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KupujemProdajem.API.Controllers
