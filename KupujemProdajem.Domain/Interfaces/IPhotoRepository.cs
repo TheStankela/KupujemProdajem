@@ -6,5 +6,6 @@ namespace KupujemProdajem.Domain.Interfaces
     {
         public Task<bool> AddPhoto(PhotoModel photoModel);
         public Task<bool> RemovePhoto(PhotoModel photoModel);
+        public Task<List<PhotoModel>> GetAdPhotos(int adId);
     }
 }
