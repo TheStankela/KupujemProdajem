@@ -13,6 +13,10 @@ namespace KupujemProdajem.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<List<PhotoModel>> GetAdPhotos(int adId)
+        {
+            return await _context.Photos.Where(p => p.AdId == adId).ToListAsync();
+        }
         public async Task<bool> AddPhoto(PhotoModel photoModel)
         {
             await _context.AddAsync(photoModel);
